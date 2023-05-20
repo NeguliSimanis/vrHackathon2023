@@ -20,6 +20,7 @@ public class ClubEntrance : MonoBehaviour
         if (!newCustomer.enteredClub)
         {
             gameManager.ProcessCustomerEntry();
+            //newCustomer.PlayYaySFX();
             newCustomer.enteredClub = true;
         }
     }

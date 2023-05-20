@@ -1475,6 +1475,12 @@ namespace BNG {
 
             // Primary Grabber just grabbed this item
             if (isPrimaryGrab) {
+                if (isCustomer)
+                {
+                    thisCustomer.PlayGrabSFX();
+                    Debug.Log("CUSTOMER GRABBED");
+                    thisCustomer.isOnWayToParentObject = false;
+                }
                 // Make sure all values are reset first
                 ResetGrabbing();
 
@@ -1566,6 +1572,13 @@ namespace BNG {
 
             }
             else if (isSecondaryGrab) {
+                if (isCustomer)
+                {
+                    thisCustomer.PlayGrabSFX();
+                    Debug.Log("CUSTOMER GRABBED");
+                    thisCustomer.isOnWayToParentObject = false;
+                }
+
                 // Set where the item will move to on the grabber
                 secondaryGrabOffset = GetClosestGrabPoint(grabbedBy);
 
@@ -1601,6 +1614,7 @@ namespace BNG {
             }
 
             journeyLength = Vector3.Distance(grabPosition, grabbedBy.transform.position);
+                
         }
 
         protected virtual void setupConfigJointGrab(Grabber grabbedBy, GrabType grabType) {
