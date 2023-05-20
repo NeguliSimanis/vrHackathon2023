@@ -63,6 +63,11 @@ namespace BNG {
         }        
 
         protected bool remoteGrabbing;
+        [Header("SIIIMANIS")]
+        [Tooltip("Cohey")]
+        public bool isCustomer = false;
+        public bool isRagdollActive = false;
+        public Customer thisCustomer;
 
         [Header("Grab Settings")]
         /// <summary>
@@ -419,6 +424,16 @@ namespace BNG {
             }
         }
 
+
+        private void Start()
+        {
+            thisCustomer = gameObject.GetComponent<Customer>();
+            if (gameObject.GetComponent<Customer>() != null)
+            {
+                isCustomer = true;
+            }
+        }
+
         [Header("Grab Points")]
         /// <summary>
         /// If Grab Mechanic is set to Snap, the closest GrabPoint will be used. Add a SnapPoint Component to a GrabPoint to specify custom hand poses and rotation.
@@ -609,7 +624,7 @@ namespace BNG {
                 // Keep track of where we were each frame
                 previousPosition = transform.position;
             }
-        }        
+        }
 
         public virtual void FixedUpdate() {
 
@@ -618,6 +633,12 @@ namespace BNG {
             }
 
             if (BeingHeld) {
+
+                if (isCustomer && !isRagdollActive)
+                {
+                    isRagdollActive = true;
+                    thisCustomer.ActivateRagdoll();
+                }
 
                 // Reset all collisions every physics update
                 // These are then populated in OnCollisionEnter / OnCollisionStay to make sure we have the most up to date collision info

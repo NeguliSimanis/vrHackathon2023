@@ -54,7 +54,7 @@ namespace BNG {
             bool weaponEquipped = false;
 
             if (grabberHasWeapon(LeftGrabber) || grabberHasWeapon(RightGrabber)) {
-                weaponEquipped = true;
+                //weaponEquipped = true;
             }
 
             // Only show if we have something equipped
