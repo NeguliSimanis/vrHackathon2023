@@ -19,9 +19,12 @@ public class GameManager : MonoBehaviour
     public GameObject customerPrefab;
     public List<CustomerPosition> customerPositions = new List<CustomerPosition>();
 
+    Material myMaterial;
+
     void Start()
     {
         audioManager = gameObject.GetComponent<AudioManager>();
+        //myMaterial = gameObject.GetComponent<Material>
     }
 
     public void ProcessCustomerLeftLevel(Customer customer)
@@ -59,6 +62,8 @@ public class GameManager : MonoBehaviour
         newCustomer.StartMovingToParent();
         
     }
+
+    
 
     public void ProcessCustomerEntry(bool isGoodCustomer = true)
     {

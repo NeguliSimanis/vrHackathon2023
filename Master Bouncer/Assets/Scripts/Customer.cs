@@ -23,6 +23,9 @@ public class Customer : MonoBehaviour
     public bool isOnWayToParentObject = false;
     public CustomerPosition parentPosition;
 
+
+    public Material[] customerMaterials;
+
     private void Start()
     {
         thisAudioSource = gameObject.GetComponent<AudioSource>();
@@ -49,6 +52,11 @@ public class Customer : MonoBehaviour
         Debug.Log("start moving to parent: " + parentPosition.gameObject.name);
         isOnWayToParentObject = true;
         startMoveTime = Time.time;
+    }
+
+    public void RandomizeCustomer()
+    {
+
     }
 
     private void FixedUpdate()
