@@ -7,6 +7,10 @@ public class ClubLight : MonoBehaviour
     Light thisLight;
     float maxIntensity = 6;
     float minIntensity = 3;
+    float lightChangeSpeed = 0.1f;
+    float minLightChangeSpeed = 0.03f;
+    float maxLightChangeSpeed = 0.18f;
+    bool isLightChangeSpeedIncreasing = true;
     bool isLightGettingBrighter = true;
 
     bool isChangingR = false;
@@ -21,13 +25,30 @@ public class ClubLight : MonoBehaviour
     }
 
 
+    private void ChangeLightChangeSpeed()
+    {
+        if (isLightChangeSpeedIncreasing)
+        {
+            lightChangeSpeed += 0.001f;
+            if (lightChangeSpeed > maxLightChangeSpeed)
+                isLightChangeSpeedIncreasing = false;
+        }
+        else
+        {
+            lightChangeSpeed -= 0.001f;
+            if (lightChangeSpeed < minLightChangeSpeed)
+                isLightChangeSpeedIncreasing = true;
+        }
+
+    }
 
 
     private void FixedUpdate()
     {
+        ChangeLightChangeSpeed();
         if (isLightGettingBrighter)
         {
-            thisLight.intensity += 0.1f;
+            thisLight.intensity += lightChangeSpeed;
             if (thisLight.intensity >= maxIntensity)
             {
                 isLightGettingBrighter = false;
@@ -35,7 +56,7 @@ public class ClubLight : MonoBehaviour
         }
         else
         {
-            thisLight.intensity -= 0.1f;
+            thisLight.intensity -= lightChangeSpeed;
             if (thisLight.intensity <= minIntensity)
             {
                 isLightGettingBrighter = true;
