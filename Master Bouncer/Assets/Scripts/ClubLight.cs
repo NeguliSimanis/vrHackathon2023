@@ -41,14 +41,34 @@ public class ClubLight : MonoBehaviour
                 isLightGettingBrighter = true;
             }
         }
-
+        Color currColor = thisLight.color;
         if (isChangingB == true)
         {
+            if (isIncreasingB)
+            {
+
+                thisLight.color = new Color(currColor.r, currColor.g, currColor.b + 0.01f);
+                if (thisLight.color.b >= 0.99)
+                    isIncreasingB = false;
+            }
+            else
+            {
+                thisLight.color = new Color(currColor.r, currColor.g, currColor.b - 0.01f);
+                if (thisLight.color.b <= 0.01)
+                    isIncreasingB = true;
+            }
 
         }
         else if (isChangingR == true)
         {
+            if (isIncreasingR)
+            {
 
+            }
+            else
+            {
+
+            }
         }
     }
 }
