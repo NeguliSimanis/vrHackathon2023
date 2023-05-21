@@ -57,10 +57,10 @@ public class GameManager : MonoBehaviour
         newCustomerObj.transform.position = new Vector3(parentPos.x, parentPos.y+5, parentPos.z);
         Customer newCustomer = newCustomerObj.GetComponent<Customer>();
         customers.Add(newCustomer);
+        //newCustomer.RandomizeCustomer();
         emptyPosition.childCustomer = newCustomer;
         newCustomer.parentPosition = emptyPosition;
         newCustomer.StartMovingToParent();
-        
     }
 
     

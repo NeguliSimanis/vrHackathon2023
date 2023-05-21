@@ -2,6 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum CustomerFeatures
+{
+    flamingo,
+    elf,
+    rabbit,
+    hasTattoos,
+    hasWings,
+    panda,
+    hasBeard,
+    hasShoes
+}
+
 public class Customer : MonoBehaviour
 {
     public bool exitedLevel = false;
@@ -23,12 +35,16 @@ public class Customer : MonoBehaviour
     public bool isOnWayToParentObject = false;
     public CustomerPosition parentPosition;
 
+    #region RANDOM customer GENERATOR
+    public CustomerVisuals[] customerRoster;
+    public CustomerVisuals myVisuals;
+    #endregion
 
-    public Material[] customerMaterials;
 
     private void Start()
     {
         thisAudioSource = gameObject.GetComponent<AudioSource>();
+        RandomizeCustomer();
     }
 
     public void ActivateRagdoll()
@@ -56,7 +72,17 @@ public class Customer : MonoBehaviour
 
     public void RandomizeCustomer()
     {
-
+        int randomRoll = Random.Range(0, customerRoster.Length);
+        for (int i = 0; i < customerRoster.Length; i++)
+        {
+            if (i == randomRoll)
+            {
+                customerRoster[i].customerModel.SetActive(true);
+            }
+            else
+                customerRoster[i].customerModel.SetActive(false);
+        }
+        myVisuals = customerRoster[randomRoll].GetComponent<CustomerVisuals>();
     }
 
     private void FixedUpdate()
