@@ -11,7 +11,8 @@ public enum CustomerFeatures
     hasWings,
     panda,
     hasBeard,
-    hasShoes
+    hasShoes,
+    hasFur
 }
 
 public class Customer : MonoBehaviour

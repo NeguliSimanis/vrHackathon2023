@@ -19,12 +19,119 @@ public class GameManager : MonoBehaviour
     public GameObject customerPrefab;
     public List<CustomerPosition> customerPositions = new List<CustomerPosition>();
 
-    Material myMaterial;
+    #region PLAYER TASK
+    string taskString1;
+    string taskString2;
+    string fullTaskString;
+    string allowedFeature;
+    string forbiddenFeature;
+    #endregion
+
+
 
     void Start()
     {
         audioManager = gameObject.GetComponent<AudioManager>();
-        //myMaterial = gameObject.GetComponent<Material>
+        GeneratePlayerTask();
+    }
+
+    //flamingo,
+    //elf,
+    //rabbit,
+    //hasTattoos,
+    //hasWings,
+    //panda,
+    //hasBeard,
+    //hasShoes,
+    //hasFur
+    private void GeneratePlayerTask()
+    {
+        string[] customerFeatures = System.Enum.GetNames(typeof(CustomerFeatures));
+        GenerateRandomFeaturePair();
+
+        if (!IsFeaturePairPossible())
+        {
+            for (int i = 0; i < 15; i++)
+            {
+                GenerateRandomFeaturePair();
+                if (IsFeaturePairPossible())
+                    break;
+            }
+            if (!IsFeaturePairPossible())
+            {
+                allowedFeature = "hasFur";
+                forbiddenFeature = "panda";
+            }
+        }
+        Debug.Log(allowedFeature + " . forb " + forbiddenFeature);
+
+        // rule 1 + what is needed
+
+        for (int i = 0; i < customerFeatures.Length; i++)
+        {
+            //Debug.Log(customerFeatures[i]);
+        }
+
+        // rule 2 + what is not needed
+    }
+
+    private bool IsFeaturePairPossible()
+    {
+        if (allowedFeature == "elf")
+            return false;
+        if (allowedFeature == "beard")
+            return false;
+        if (allowedFeature == "rabbit" && forbiddenFeature == "hasFur")
+            return false;
+        if (forbiddenFeature == "rabbit" && allowedFeature == "hasShoes")
+            return false;
+        if (forbiddenFeature == "rabbit" && allowedFeature == "hasTattoos")
+            return false;
+        if (allowedFeature == "panda" && forbiddenFeature == "hasFur")
+            return false;
+        if (allowedFeature == "flamingo" && forbiddenFeature == "hasWings")
+            return false;
+        if (allowedFeature == "hasWings" && forbiddenFeature == "flamingo")
+            return false;
+        return true;
+    }
+
+
+    private void GenerateRandomFeaturePair()
+    {
+        string[] customerFeatures = System.Enum.GetNames(typeof(CustomerFeatures));
+        int randomRollAllowed;
+        randomRollAllowed = Random.Range(0, customerFeatures.Length);
+        allowedFeature = customerFeatures[randomRollAllowed];
+
+        int randomRollForbidden = Random.Range(0, customerFeatures.Length);
+        if (randomRollAllowed == randomRollForbidden)
+        {
+
+            for (int i = 0; i < 7; i++)
+            {
+                randomRollForbidden = Random.Range(0, customerFeatures.Length);
+                if (randomRollForbidden != randomRollAllowed)
+                    break;
+            }
+            if (randomRollAllowed == randomRollForbidden)
+            {
+                if (randomRollForbidden + 1 < customerFeatures.Length)
+                    randomRollForbidden += 1;
+                else
+                    randomRollForbidden -= 1;
+            }
+        }
+
+        forbiddenFeature = customerFeatures[randomRollForbidden];
+
+        Debug.Log("allowed " + allowedFeature + ". Forbidden: " + forbiddenFeature);
+    }
+
+    private string GetFeatureDescription(string feature, bool isAllowed = true)
+    {
+        string description = "";
+        return description;
     }
 
     public void ProcessCustomerLeftLevel(Customer customer)
