@@ -5,11 +5,17 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    bool isGameOver = false;
 
     [SerializeField] TextMeshProUGUI scoreText;
     int score = 0;
     int scoreIncrement = 10;
 
+    float gameDuration = 120f;
+    float gameStartTime = 0f;
+
+   int displaySeconds;
+   int displayMinutes;
     AudioManager audioManager;
 
     /// <summary>
@@ -25,6 +31,9 @@ public class GameManager : MonoBehaviour
     string fullTaskString;
     string allowedFeature;
     string forbiddenFeature;
+
+
+    [SerializeField] TextMeshProUGUI taskText;
     #endregion
 
 
@@ -51,6 +60,7 @@ public class GameManager : MonoBehaviour
 
         if (!IsFeaturePairPossible())
         {
+            Debug.Log("not allowed this combo " + allowedFeature + " to enter club. Unless they " + forbiddenFeature);
             for (int i = 0; i < 15; i++)
             {
                 GenerateRandomFeaturePair();
@@ -65,21 +75,14 @@ public class GameManager : MonoBehaviour
         }
         Debug.Log(allowedFeature + " . forb " + forbiddenFeature);
 
-        // rule 1 + what is needed
-
-        for (int i = 0; i < customerFeatures.Length; i++)
-        {
-            //Debug.Log(customerFeatures[i]);
-        }
-
-        // rule 2 + what is not needed
+        taskText.text = "Only allow " + allowedFeature + " to enter club. Unless they " + forbiddenFeature;
     }
 
     private bool IsFeaturePairPossible()
     {
-        if (allowedFeature == "elf")
+        if (allowedFeature == "elf" && forbiddenFeature == "beard")
             return false;
-        if (allowedFeature == "beard")
+        if (allowedFeature == "beard" && forbiddenFeature == "elf")
             return false;
         if (allowedFeature == "rabbit" && forbiddenFeature == "hasFur")
             return false;
@@ -162,6 +165,9 @@ public class GameManager : MonoBehaviour
         GameObject newCustomerObj = Instantiate(customerPrefab, customerPositions[3].transform);
         Vector3 parentPos = customerPositions[3].transform.position;
         newCustomerObj.transform.position = new Vector3(parentPos.x, parentPos.y+5, parentPos.z);
+        float rotationY = newCustomerObj.transform.rotation.y + 180f;
+        Vector3 newRotation = new Vector3(newCustomerObj.transform.rotation.x, rotationY, newCustomerObj.transform.rotation.z);
+        newCustomerObj.transform.eulerAngles = newRotation;
         Customer newCustomer = newCustomerObj.GetComponent<Customer>();
         customers.Add(newCustomer);
         //newCustomer.RandomizeCustomer();
@@ -170,21 +176,70 @@ public class GameManager : MonoBehaviour
         newCustomer.StartMovingToParent();
     }
 
-    
-
-    public void ProcessCustomerEntry(bool isGoodCustomer = true)
+    private void CalculateRemainingTime()
     {
+        int seconds = ((int)gameStartTime + (int)gameDuration - (int)Time.time);
+        displaySeconds = seconds % 60;
+        displayMinutes = (seconds / 60) % 60;
+    }
+
+    public void ProcessCustomerEntry(Customer customer, bool isGoodCustomer = true)
+    {
+        isGoodCustomer = false;
+        bool isForbidden = false;
+        List<CustomerFeatures> customerFeatures = new List<CustomerFeatures>();
+        foreach(CustomerFeatures feature in customer.myVisuals.customerFeatures)
+        {
+            if (feature.ToString() == forbiddenFeature)
+            {
+                isForbidden = true;
+            }
+            if (feature.ToString() == allowedFeature)
+                isGoodCustomer = true;
+        }
+
+        if (isForbidden)
+        {
+            isGoodCustomer = false;
+        }
+
         if (isGoodCustomer)
         {
-            score += scoreIncrement;
+            if (!isGameOver)
+                score += scoreIncrement;
             audioManager.PlayYaySFX();
         }
         else
         {
+            audioManager.PlayWrongSFX();
             score -= scoreIncrement;
         }
 
-        scoreText.text = "Score: " + score.ToString();
+       
 
+    }
+
+    private void Update()
+    {
+        if (Time.time > gameStartTime + gameDuration & !isGameOver)
+        {
+            isGameOver = true;
+            EndGame();
+            return;
+        }
+        if (isGameOver)
+            return;
+        CalculateRemainingTime();
+        string secondText = displaySeconds.ToString();
+        if (displaySeconds < 10)
+            secondText = "0"+ displaySeconds.ToString();
+        scoreText.text = "Time: 0" + displayMinutes.ToString() + ":" + displaySeconds.ToString() + "\nScore: " + score.ToString() ;
+
+    }
+
+    private void EndGame()
+    {
+        audioManager.PlayGameOverSFX();
+        scoreText.text = "GAME OVER " + "\nYou earned : " + score.ToString() + " points";
     }
 }
